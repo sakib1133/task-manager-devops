@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Task Manager</title>
+</head>
+<body>
+<h1>Task Manager</h1>
+<input type="text" id="task" placeholder="Enter task">
+<button onclick="addTask()">Add Task</button>
+<ul id="taskList"></ul>
+<script>
+async function addTask() {
+  const task = document.getElementById("task").value;
+  await fetch("http://localhost:5000/tasks", {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json"
+    },
+    body: JSON.stringify({ task })
+  });
+  loadTasks();
+}
+async function loadTasks() {
+  const res = await fetch("http://localhost:5000/tasks");
+  const data = await res.json();
+  const list = document.getElementById("taskList");
+  list.innerHTML = "";
+  data.forEach(t => {
+    const li = document.createElement("li");
+    li.innerText = t.task;
+    list.appendChild(li);
+  });
+}
+loadTasks();
+</script>
+</body>
+</html>
