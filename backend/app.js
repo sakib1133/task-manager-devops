@@ -4,7 +4,10 @@ const cors = require("cors");
 const app = express();
 app.use(express.json());
 app.use(cors());
-mongoose.connect("mongodb://mongo:27017/tasks");
+const MONGO_URL = process.env.MONGO_URL || "mongodb://mongo:27017/tasks";
+mongoose.connect(MONGO_URL)
+  .then(() => console.log("MongoDB Connected"))
+  .catch(err => console.log(err));
 const TaskSchema = new mongoose.Schema({
   task: String
 });
@@ -18,4 +21,5 @@ app.post("/tasks", async (req, res) => {
   await newTask.save();
   res.json(newTask);
 });
-app.listen(5000, () => console.log("Server running"));
+const PORT = process.env.PORT || 5000;
+app.listen(PORT, () => console.log(`Server running on ${PORT}`));
